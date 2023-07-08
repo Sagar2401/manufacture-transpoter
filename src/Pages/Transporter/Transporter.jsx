@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import Navbar from "./navbar";
-import ChatList from "./List";
+import Navbar from "../../Components/Navbar/navbar";
+import ChatList from "../List/List";
 import useTransporter, {
   TransporterProvider,
 } from "../../Hooks/useTransporter";
-import AddPriceModel from "./addPriceModel";
+import AddPriceModel from "../Model/addPriceModel";
 
 const Transporter = () => {
   const {

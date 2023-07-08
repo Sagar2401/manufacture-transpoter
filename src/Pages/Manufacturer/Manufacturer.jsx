@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
-import Navbar from "./navbar";
+import Navbar from "../../Components/Navbar/navbar";
 import useManufacturer, {
   ManufacturerProvider,
 } from "../../Hooks/useManufacturer";
-import AddModal from "./addModal";
-import ChatList from "./List";
+import AddModal from "../Model/addModal";
+import ChatList from "../List/List";
 import { Toast } from "../../Components/Toast";
 
 const Manufacturer = () => {

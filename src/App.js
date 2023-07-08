@@ -1,10 +1,10 @@
 import "./App.css";
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import SignUp from "./Pages/Register";
-import SignIn from "./Pages/login";
-import { Wrapper as Manufacturer } from "./Pages/Manufacturer";
-import { Wrapper as Transporter } from "./Pages/Transporter";
+import SignUp from "./Pages/Login-reg/Register";
+import SignIn from "./Pages/Login-reg/login";
+import { Wrapper as Manufacturer } from "./Pages/Manufacturer/Manufacturer";
+import { Wrapper as Transporter } from "./Pages/Transporter/Transporter";
 import { useProduct } from "./Hooks/useProduct";
 export const ProductContext = React.createContext();
 function App() {
