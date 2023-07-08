@@ -3,9 +3,9 @@ import { createContext, useContext, useState } from "react";
 import { getCookie } from "../Assets/cookies";
 
 const ctx = createContext();
-export const useManufacturer = () => useContext(ctx);
+export const useTransporter = () => useContext(ctx);
 
-export const ManufacturerProvider = ({ children }) => {
+export const TransporterProvider = ({ children }) => {
   const token = getCookie("user_token");
   const { address } = JSON.parse(getCookie("user_data"));
   const [notification, setNotification] = useState({
@@ -17,7 +17,7 @@ export const ManufacturerProvider = ({ children }) => {
   const [open, setOpen] = useState(false);
 
   const [data, setData] = useState([]);
-  const [transData, setTransData] = useState([]);
+  const [currentData, setCurrentData] = useState([]);
   const [formData, setFormData] = useState({
     pickup: address,
   });
@@ -42,17 +42,14 @@ export const ManufacturerProvider = ({ children }) => {
       setLoading(false);
     }
   };
-  const addManufacturer = async () => {
+  const AddPrice = async () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_SERVER}api/manufacturor/add`,
+        `${process.env.REACT_APP_SERVER}api/manufacturor/updatePrice`,
         {
-          transporter: formData?.transporter,
-          from: formData?.from,
-          to: formData?.to,
-          quantity: formData?.quantity,
-          pickup: formData?.pickup,
+          order_id: currentData?._id,
+          price: Number(currentData?.price),
         },
         {
           headers: {
@@ -67,61 +64,43 @@ export const ManufacturerProvider = ({ children }) => {
           type: "success",
         });
         getManufacturer();
-        setFormData({
-          transporter: "",
-          from: "",
-          to: "",
-          quantity: "",
-          pickup: address,
-        });
+        setCurrentData({});
         setLoading(false);
         setOpen(false);
+      } else {
+        setNotification({
+          visible: true,
+          message: response?.data?.message,
+          type: "error",
+        });
       }
     } catch (error) {
       setLoading(false);
     }
   };
-  const getTranspoter = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_SERVER}api/user/alltranspoter`,
-        {
-          headers: {
-            authorization: token ? `Bearer ${token}` : "",
-          },
-        }
-      );
-      if (response?.data?.status) {
-        setTransData(response?.data?.data);
-        setLoading(false);
-        setOpen(true);
-      }
-    } catch (error) {
-      setLoading(false);
-    }
+  const handleAddPrice = (data) => {
+    setCurrentData(data);
+    setOpen(true);
   };
-
-  const handleOpenModel = (data) => {
-    getTranspoter();
-  };
-
+  console.log(currentData);
   return (
     <ctx.Provider
       value={{
         open,
         setOpen,
         getManufacturer,
-        addManufacturer,
+        AddPrice,
         loading,
         data,
         setFormData,
         formData,
-        handleOpenModel,
-        transData,
         notification,
         setNotification,
         setData,
+        currentData,
+        setCurrentData,
+        handleAddPrice,
+        AddPrice,
       }}
     >
       {children}
@@ -129,4 +108,4 @@ export const ManufacturerProvider = ({ children }) => {
   );
 };
 
-export default useManufacturer;
+export default useTransporter;

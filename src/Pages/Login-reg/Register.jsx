@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 import { LoadingButton } from "@mui/lab";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import useRegister from "../Hooks/useRegister";
+import useRegister from "../../Hooks/useRegister";
 import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -108,6 +108,20 @@ export default function SignUp() {
                 autoComplete="new-password"
               />
             </Grid>
+
+            {value === "manufacturer" && (
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="address"
+                  label="Address"
+                  type="address"
+                  id="address"
+                  autoComplete="new-address"
+                />
+              </Grid>
+            )}
           </Grid>
           <LoadingButton
             type="submit"

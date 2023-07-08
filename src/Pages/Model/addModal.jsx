@@ -12,45 +12,29 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import useManufacturer from "../Hooks/useManufacturer";
-import { getCookie } from "../Assets/cookies";
-const countries = [
-  {
-    value: "USA",
-    label: "USA",
-  },
-  {
-    value: "EUR",
-    label: "EUR",
-  },
-  {
-    value: "BTC",
-    label: "BTC",
-  },
-  {
-    value: "JPY",
-    label: "JPY",
-  },
-];
+import useManufacturer from "../../Hooks/useManufacturer";
+import { getCookie } from "../../Assets/cookies";
+
 const quantity = [
   {
-    value: 1,
+    value: "1",
     label: "1 Ton",
   },
-  { value: 2, label: "2 Ton" },
-  { value: 3, label: "3 Ton" },
-  { value: 4, label: "4 Ton" },
-  { value: 5, label: "5 Ton" },
-  { value: 6, label: "6 Ton" },
-  { value: 7, label: "7 Ton" },
+  { value: "2", label: "2 Ton" },
+  { value: "3", label: "3 Ton" },
+  { value: "4", label: "4 Ton" },
+  { value: "5", label: "5 Ton" },
+  { value: "6", label: "6 Ton" },
+  { value: "7", label: "7 Ton" },
 ];
 const AddModal = ({ open, setOpen }) => {
   const { address } = JSON.parse(getCookie("user_data"));
 
-  const { addManufacturer, setFormData, formData } = useManufacturer();
+  const { addManufacturer, setFormData, formData, transData } =
+    useManufacturer();
 
   return (
-    <Dialog className={"root"} maxWidth="md" open={true}>
+    <Dialog className={"root"} maxWidth="md" open={open}>
       <DialogTitle
         className={"padding"}
         sx={{
@@ -101,7 +85,7 @@ const AddModal = ({ open, setOpen }) => {
                   fullWidth
                   select
                   variant="outlined"
-                  value={formData.quantity || quantity[0].value}
+                  value={formData.quantity}
                   id="quantity"
                   margin="dense"
                   helperText="Please select your quantity"
@@ -123,7 +107,7 @@ const AddModal = ({ open, setOpen }) => {
                   fullWidth
                   select
                   variant="outlined"
-                  value={formData.transportar || countries[0].value}
+                  value={formData.transporter}
                   id="transportar"
                   margin="dense"
                   helperText="Please select your Transportar"
@@ -131,9 +115,9 @@ const AddModal = ({ open, setOpen }) => {
                     setFormData({ ...formData, transporter: e.target.value })
                   }
                 >
-                  {countries.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
+                  {transData?.map((option) => (
+                    <MenuItem key={option.value} value={option._id}>
+                      {option.first_name}
                     </MenuItem>
                   ))}
                 </TextField>

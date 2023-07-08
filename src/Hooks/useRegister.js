@@ -1,9 +1,13 @@
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const url = "http://localhost:5000";
 const useRegister = () => {
+  const [notification, setNotification] = useState({
+    visible: false,
+    message: "",
+    type: "success",
+  });
   const navigate = useNavigate();
   const [value, setValue] = React.useState("manufacturer");
   const [loading, setLoading] = React.useState(false);
@@ -14,23 +18,42 @@ const useRegister = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${process.env.REACT_APP_SERVER}api/user/register`, {
-        email: data.get("email"),
-        password: data.get("password"),
-        first_name: data.get("firstName"),
-        last_name: data.get("lastName"),
-        address: "surat",
-        isManufacturor: value === "manufacturer" ? true : false,
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVER}api/user/register`,
+        {
+          email: data.get("email"),
+          password: data.get("password"),
+          first_name: data.get("firstName"),
+          last_name: data.get("lastName"),
+          address:
+            value === "manufacturer" ? data.get("address") : "no address",
+          isManufacturor: value === "manufacturer" ? true : false,
+        }
+      );
       if (response?.data?.status) {
         setLoading(false);
-
+        setNotification({
+          visible: true,
+          message: response?.data?.message,
+          type: "success",
+        });
         setTimeout(() => {
           navigate("/");
-        }, 2000);
+        }, 1000);
+      } else {
+        setNotification({
+          visible: true,
+          message: response?.data?.message,
+          type: "error",
+        });
       }
     } catch (error) {
       setLoading(false);
+      setNotification({
+        visible: true,
+        message: "something went wrong",
+        type: "error",
+      });
     }
   };
 
@@ -42,6 +65,8 @@ const useRegister = () => {
     value,
     handleChange,
     loading,
+    notification,
+    setNotification,
   };
 };
 
