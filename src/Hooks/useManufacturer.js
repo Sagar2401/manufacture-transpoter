@@ -17,7 +17,7 @@ const useManufacturer = () => {
   const getManufacturer = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${url}/api/manufacturor`, {
+      const response = await axios.get(`${process.env.REACT_APP_SERVER}api/manufacturor`, {
         headers: {
           authorization: token ? `Bearer ${token}` : "",
         },
@@ -35,7 +35,7 @@ const useManufacturer = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${url}/api/manufacturor/add`,
+        `${process.env.REACT_APP_SERVER}api/manufacturor/add`,
         {
           transporter: formData?.transportar,
           from: formData?.from,

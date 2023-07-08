@@ -14,7 +14,7 @@ const useRegister = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${url}/api/user/register`, {
+      const response = await axios.post(`${process.env.REACT_APP_SERVER}api/user/register`, {
         email: data.get("email"),
         password: data.get("password"),
         first_name: data.get("firstName"),

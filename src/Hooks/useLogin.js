@@ -14,7 +14,7 @@ const useLogin = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${url}/api/user/login`, {
+      const response = await axios.post(`${process.env.REACT_APP_SERVER}api/user/login`, {
         email: data.get("email"),
         password: data.get("password"),
       });
