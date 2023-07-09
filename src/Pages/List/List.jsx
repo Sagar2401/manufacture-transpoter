@@ -11,11 +11,61 @@ import {
   ListItemText,
   TextField,
 } from "@mui/material";
+
+import { io } from "socket.io-client";
 import { getCookie } from "../../Assets/cookies";
+import axios from "axios";
 const ChatList = ({ data, handleAddPrice }) => {
   const userData = JSON.parse(getCookie("user_data"));
+  const token = getCookie("user_token");
+
   console.log(userData);
   const [search, setSearch] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [m, setm] = useState("");
+  const [d, setd] = useState({});
+
+  const socket = io(`${process.env.REACT_APP_SERVER}`);
+  // socket.on("connect_error", (error) => {});
+  socket.on("connect", () => {
+    // localStorage.setItem("socket_id", socket.id);
+    console.log("connected");
+  });
+
+  socket.on(
+    "send-msg",
+    {
+      from: d.transporter,
+      to: "64a97bc9f493e8b3d0107edc",
+      message: m,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  const handleSendMsg = async (msg) => {
+    await axios.post(
+      "http://localhost:5000/api/message/addmsg",
+      {
+        from: d.transporter,
+        to: "64a97bc9f493e8b3d0107edc",
+        message: m,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const msgs = [...messages];
+    msgs.push({ fromSelf: true, message: msg });
+    // setMessages(msgs);
+    console.log(msgs);
+  };
+
   return (
     <div>
       <Grid container className={"chatSection"}>
@@ -52,7 +102,7 @@ const ChatList = ({ data, handleAddPrice }) => {
               })
               .map((item) => {
                 return (
-                  <ListItem className="listItem">
+                  <ListItem className="listItem" onClick={() => setd(item)}>
                     <div>
                       <div>
                         Order ID : <span>{item._id}</span>
@@ -71,7 +121,9 @@ const ChatList = ({ data, handleAddPrice }) => {
                       <Button
                         variant="contained"
                         disabled={item.price}
-                        onClick={() => handleAddPrice(item)}
+                        onClick={() => {
+                          handleAddPrice(item);
+                        }}
                       >
                         Add price
                       </Button>
@@ -130,10 +182,17 @@ const ChatList = ({ data, handleAddPrice }) => {
                 id="outlined-basic-email"
                 label="Type Something"
                 fullWidth
+                onChange={(e) => setm(e.target.value)}
               />
             </Grid>
             <Grid xs={1} align="right">
-              <Fab color="primary" aria-label="add">
+              <Fab
+                color="primary"
+                aria-label="add"
+                onClick={() => {
+                  handleSendMsg(m);
+                }}
+              >
                 Send
               </Fab>
             </Grid>
