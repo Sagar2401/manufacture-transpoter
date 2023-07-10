@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+/* eslint-disable array-callback-return */
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useRef } from "react";
 
 import "./List.css";
 import {
@@ -12,60 +14,31 @@ import {
   TextField,
 } from "@mui/material";
 
-import { io } from "socket.io-client";
 import { getCookie } from "../../Assets/cookies";
-import axios from "axios";
-const ChatList = ({ data, handleAddPrice }) => {
+import { useList } from "../../Hooks/useList";
+import { Toast } from "../../Components/Toast";
+const ChatList = ({ data, handleAddPrice, setData, getManufacturer }) => {
   const userData = JSON.parse(getCookie("user_data"));
-  const token = getCookie("user_token");
-
-  console.log(userData);
-  const [search, setSearch] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [m, setm] = useState("");
-  const [d, setd] = useState({});
-
-  const socket = io(`${process.env.REACT_APP_SERVER}`);
-  // socket.on("connect_error", (error) => {});
-  socket.on("connect", () => {
-    // localStorage.setItem("socket_id", socket.id);
-    console.log("connected");
-  });
-
-  socket.on(
-    "send-msg",
-    {
-      from: d.transporter,
-      to: "64a97bc9f493e8b3d0107edc",
-      message: m,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  const handleSendMsg = async (msg) => {
-    await axios.post(
-      "http://localhost:5000/api/message/addmsg",
-      {
-        from: d.transporter,
-        to: "64a97bc9f493e8b3d0107edc",
-        message: m,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    const msgs = [...messages];
-    msgs.push({ fromSelf: true, message: msg });
-    // setMessages(msgs);
-    console.log(msgs);
-  };
-
+  const scrollRef = useRef();
+  const {
+    search,
+    notification,
+    setNotification,
+    setSearch,
+    setMessages,
+    setOrderData,
+    handleSendMsg,
+    allmessages,
+    messages,
+  } = useList();
+  console.log(allmessages);
+  useEffect(() => {
+    setData([]);
+    getManufacturer();
+  }, []);
+  useEffect(() => {
+    scrollRef.current.scrollTop = scrollRef?.current?.scrollHeight;
+  }, [allmessages]);
   return (
     <div>
       <Grid container className={"chatSection"}>
@@ -82,7 +55,7 @@ const ChatList = ({ data, handleAddPrice }) => {
           <Divider />
           <List className="list">
             {data
-              .filter((data) => {
+              ?.filter((data) => {
                 //find the ata for from,to,order id
                 if (search === "") {
                   return data;
@@ -102,7 +75,10 @@ const ChatList = ({ data, handleAddPrice }) => {
               })
               .map((item) => {
                 return (
-                  <ListItem className="listItem" onClick={() => setd(item)}>
+                  <ListItem
+                    className="listItem"
+                    onClick={() => setOrderData(item)}
+                  >
                     <div>
                       <div>
                         Order ID : <span>{item._id}</span>
@@ -133,72 +109,76 @@ const ChatList = ({ data, handleAddPrice }) => {
               })}
           </List>
         </Grid>
-        <Grid item xs={8}>
-          <List className={"messageArea"}>
-            <ListItem key="1">
-              <Grid container>
-                <Grid item xs={12}>
-                  <ListItemText
-                    align="right"
-                    primary="Hey man, What's up ?"
-                  ></ListItemText>
-                </Grid>
-                <Grid item xs={12}>
-                  <ListItemText align="right" secondary="09:30"></ListItemText>
-                </Grid>
+        {allmessages.length > 0 ? (
+          <Grid item xs={8}>
+            <List className={"messageArea"} ref={scrollRef}>
+              {allmessages?.map((item) => {
+                const time = new Date(item.time);
+
+                const formattedTime = time.toLocaleTimeString("en-US", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                });
+                console.log(item.fromSelf);
+                return (
+                  <ListItem key={item._id}>
+                    <Grid container>
+                      <Grid item xs={12}>
+                        <ListItemText
+                          align={item?.fromSelf ? "right" : "left"}
+                          primary={item.message}
+                        ></ListItemText>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <ListItemText
+                          align={item?.fromSelf ? "right" : "left"}
+                          secondary={formattedTime}
+                        ></ListItemText>
+                      </Grid>
+                    </Grid>
+                  </ListItem>
+                );
+              })}
+            </List>
+            <Divider />
+            <Grid container style={{ padding: "20px" }}>
+              <Grid item xs={11}>
+                <TextField
+                  id="outlined-basic-email"
+                  label="Type Something"
+                  fullWidth
+                  value={messages}
+                  onChange={(e) => setMessages(e.target.value)}
+                />
               </Grid>
-            </ListItem>
-            <ListItem key="2">
-              <Grid container>
-                <Grid item xs={12}>
-                  <ListItemText
-                    align="left"
-                    primary="Hey, Iam Good! What about you ?"
-                  ></ListItemText>
-                </Grid>
-                <Grid item xs={12}>
-                  <ListItemText align="left" secondary="09:31"></ListItemText>
-                </Grid>
+              <Grid xs={1} align="right">
+                <Fab
+                  color="primary"
+                  aria-label="add"
+                  onClick={() => {
+                    handleSendMsg();
+                  }}
+                >
+                  Send
+                </Fab>
               </Grid>
-            </ListItem>
-            <ListItem key="3">
-              <Grid container>
-                <Grid item xs={12}>
-                  <ListItemText
-                    align="right"
-                    primary="Cool. i am good, let's catch up!"
-                  ></ListItemText>
-                </Grid>
-                <Grid item xs={12}>
-                  <ListItemText align="right" secondary="10:30"></ListItemText>
-                </Grid>
-              </Grid>
-            </ListItem>
-          </List>
-          <Divider />
-          <Grid container style={{ padding: "20px" }}>
-            <Grid item xs={11}>
-              <TextField
-                id="outlined-basic-email"
-                label="Type Something"
-                fullWidth
-                onChange={(e) => setm(e.target.value)}
-              />
-            </Grid>
-            <Grid xs={1} align="right">
-              <Fab
-                color="primary"
-                aria-label="add"
-                onClick={() => {
-                  handleSendMsg(m);
-                }}
-              >
-                Send
-              </Fab>
             </Grid>
           </Grid>
-        </Grid>
+        ) : (
+          <div
+            style={{
+              textAlign: "center",
+              marginTop: "20%",
+              alignItems: "center",
+              width: "66%",
+            }}
+            ref={scrollRef}
+          >
+            No Messages select any order to start chat
+          </div>
+        )}
       </Grid>
+      <Toast notification={notification} setNotification={setNotification} />
     </div>
   );
 };

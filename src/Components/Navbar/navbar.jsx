@@ -11,7 +11,7 @@ const Navbar = ({ handleOpenModel, button }) => {
       <span className="name">Hello {userdata.first_name}</span>
       {button && (
         <Button sx={{ color: "white" }} onClick={handleOpenModel}>
-          Add New Data
+          Add New Order
         </Button>
       )}
     </div>

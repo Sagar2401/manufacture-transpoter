@@ -20,16 +20,14 @@ const Manufacturer = () => {
     data,
   } = useManufacturer();
 
-  useEffect(() => {
-    setData([]);
-    getManufacturer();
-  }, []);
-  console.log(11);
-
   return (
     <>
       <Navbar button={true} handleOpenModel={handleOpenModel} />
-      <ChatList data={data} />
+      <ChatList
+        data={data}
+        setData={setData}
+        getManufacturer={getManufacturer}
+      />
       <AddModal open={open} setOpen={setOpen} />
       <Toast notification={notification} setNotification={setNotification} />
     </>

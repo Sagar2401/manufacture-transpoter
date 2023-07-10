@@ -22,7 +22,6 @@ export const ManufacturerProvider = ({ children }) => {
     pickup: address,
   });
   const [loading, setLoading] = useState(false);
-  //   console.log(userdata);
   const getManufacturer = async () => {
     setLoading(true);
     try {

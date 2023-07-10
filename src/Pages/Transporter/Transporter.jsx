@@ -15,15 +15,19 @@ const Transporter = () => {
     handleAddPrice,
   } = useTransporter();
 
-  console.log("handleAddPrice");
-  useEffect(() => {
-    setData([]);
-    getManufacturer();
-  }, []);
+  // useEffect(() => {
+  //   setData([]);
+  //   getManufacturer();
+  // }, []);
   return (
     <>
       <Navbar />
-      <ChatList data={data} handleAddPrice={handleAddPrice} />
+      <ChatList
+        data={data}
+        setData={setData}
+        getManufacturer={getManufacturer}
+        handleAddPrice={handleAddPrice}
+      />
       <AddPriceModel />
 
       {/* <Toast notification={notification} setNotification={setNotification} /> */}

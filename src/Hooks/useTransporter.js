@@ -22,7 +22,6 @@ export const TransporterProvider = ({ children }) => {
     pickup: address,
   });
   const [loading, setLoading] = useState(false);
-  //   console.log(userdata);
   const getManufacturer = async () => {
     setLoading(true);
     try {
@@ -82,7 +81,6 @@ export const TransporterProvider = ({ children }) => {
     setCurrentData(data);
     setOpen(true);
   };
-  console.log(currentData);
   return (
     <ctx.Provider
       value={{
@@ -100,7 +98,6 @@ export const TransporterProvider = ({ children }) => {
         currentData,
         setCurrentData,
         handleAddPrice,
-        AddPrice,
       }}
     >
       {children}

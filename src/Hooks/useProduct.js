@@ -8,7 +8,6 @@ export const useProduct = () => {
   });
 
   const notify = (type, message) => {
-    console.log(type, message);
     setNotification({
       visible: true,
       message: message,
