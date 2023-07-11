@@ -172,7 +172,6 @@ const ChatList = ({ data, handleAddPrice, setData, getManufacturer }) => {
               alignItems: "center",
               width: "66%",
             }}
-            ref={scrollRef}
           >
             No Messages select any order to start chat
           </div>
