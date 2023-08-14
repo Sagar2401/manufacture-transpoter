@@ -37,7 +37,9 @@ const ChatList = ({ data, handleAddPrice, setData, getManufacturer }) => {
     getManufacturer();
   }, []);
   useEffect(() => {
-     scrollRef?.current?.scrollHeight&&scrollRef.current.scrollTop = scrollRef?.current?.scrollHeight;
+    if (scrollRef?.current?.scrollHeight) {
+      scrollRef.current.scrollTop = scrollRef?.current?.scrollHeight;
+    }
   }, [allmessages]);
   return (
     <div>
